@@ -50,7 +50,7 @@ namespace Service.MessageTemplates
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGrpcSchema<HelloService, IHelloService>();
+                endpoints.MapGrpcSchema<TemplateService, ITemplateService>();
 
                 endpoints.MapGrpcSchemaRegistry();
 

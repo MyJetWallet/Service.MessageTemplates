@@ -11,6 +11,6 @@ namespace Service.MessageTemplates.Client
         {
         }
 
-        public IHelloService GetHelloService() => CreateGrpcService<IHelloService>();
+        public ITemplateService GetHelloService() => CreateGrpcService<ITemplateService>();
     }
 }

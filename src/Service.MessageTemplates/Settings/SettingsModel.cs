@@ -13,5 +13,9 @@ namespace Service.MessageTemplates.Settings
 
         [YamlProperty("MessageTemplates.ElkLogs")]
         public LogElkSettings ElkLogs { get; set; }
+        
+        [YamlProperty("MessageTemplates.MyNoSqlWriterUrl")]
+        public string MyNoSqlWriterUrl { get; set; }
+        
     }
 }

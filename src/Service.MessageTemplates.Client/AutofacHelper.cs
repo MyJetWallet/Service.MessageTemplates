@@ -11,7 +11,7 @@ namespace Service.MessageTemplates.Client
         {
             var factory = new MessageTemplatesClientFactory(grpcServiceUrl);
 
-            builder.RegisterInstance(factory.GetHelloService()).As<IHelloService>().SingleInstance();
+            builder.RegisterInstance(factory.GetHelloService()).As<ITemplateService>().SingleInstance();
         }
     }
 }
