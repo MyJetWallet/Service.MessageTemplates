@@ -51,15 +51,16 @@ namespace Service.MessageTemplates.Services
             }
         }
 
-        public async Task<string> GetMessageTemplate(string templateId, string brand, string lang)
+        public async Task<GetTemplateBodyResponse> GetTemplateBody(GetTemplateBodyRequest request)
         {
+            var templateId = request.TemplateId.ToLower();
+            var brand = request.Brand.ToLower();
+            var lang = request.TemplateId.ToLower();
+            
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(templateId);
             var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
 
-            brand = brand.ToLower();
-            lang = lang.ToLower();
-            
             string body; 
             if (!template.Bodies.TryGetValue((brand, lang), out body))
             {
@@ -81,7 +82,10 @@ namespace Service.MessageTemplates.Services
                 }
             }
 
-            return body;
+            return new GetTemplateBodyResponse()
+            {
+                Body = body
+            };
         }
 
         public async Task CreateDefaultTemplates()
@@ -109,6 +113,7 @@ namespace Service.MessageTemplates.Services
                 }
             }
         }
+        
         public async Task<TemplateListResponse> GetAllTemplates()
         {
             try
@@ -138,9 +143,10 @@ namespace Service.MessageTemplates.Services
                 template.DefaultBrand = _defaultBrand;
             if (string.IsNullOrWhiteSpace(template.DefaultLang))
                 template.DefaultLang = _defaultLang;
-            if (template.Bodies == null)
-                template.Bodies = new();
             
+            template.Bodies ??= new();
+            template.TemplateId = template.TemplateId.ToLower();
+
             if (!template.Bodies.TryGetValue((template.DefaultBrand, template.DefaultLang), out var body))
             {
                 var value = await GenerateTemplateBodyPlaceholderWithParams(template.TemplateId, template.Params);
@@ -152,34 +158,40 @@ namespace Service.MessageTemplates.Services
 
         public async Task EditTemplate(TemplateEditRequest request)
         {
+            var templateId = request.TemplateId.ToLower();
+            var brand = request.Brand.ToLower();
+            var lang = request.TemplateId.ToLower();
+            
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
-            var rowKey = TemplateNoSqlEntity.GenerateRowKey(request.TemplateId);
+            var rowKey = TemplateNoSqlEntity.GenerateRowKey(templateId);
 
             var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
-            template.Bodies[(request.Brand.ToLower(), request.Lang.ToLower())] = request.TemplateBody;
+            template.Bodies[(brand, lang)] = request.TemplateBody;
 
             await _templateWriter.InsertOrReplaceAsync(TemplateNoSqlEntity.Create(template));
         }
         
         public async Task EditDefaultValues(TemplateEditRequest request)
         {
+            var templateId = request.TemplateId.ToLower();
+            var brand = request.Brand.ToLower();
+            var lang = request.TemplateId.ToLower();
+            
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
-            var rowKey = TemplateNoSqlEntity.GenerateRowKey(request.TemplateId);
-            request.Brand = request.Brand.ToLower();
-            request.Lang = request.Lang.ToLower();
+            var rowKey = TemplateNoSqlEntity.GenerateRowKey(templateId);
 
             var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
-            template.DefaultBrand = request.Brand;
-            template.DefaultLang = request.Lang;
+            template.DefaultBrand = brand;
+            template.DefaultLang = lang;
 
             if (string.IsNullOrWhiteSpace(request.TemplateBody))
             {
-                template.Bodies[(request.Brand, request.Lang)] =
-                    await GenerateTemplateBodyPlaceholder(request.TemplateId);
+                template.Bodies[(brand, lang)] =
+                    await GenerateTemplateBodyPlaceholder(templateId);
             }
             else
             {
-                template.Bodies[(request.Brand, request.Lang)] = request.TemplateBody;
+                template.Bodies[(brand, lang)] = request.TemplateBody;
             }
             await _templateWriter.InsertOrReplaceAsync(TemplateNoSqlEntity.Create(template));
         }
