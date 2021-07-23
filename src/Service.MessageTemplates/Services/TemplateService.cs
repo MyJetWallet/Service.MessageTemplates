@@ -238,7 +238,9 @@ namespace Service.MessageTemplates.Services
         private async Task<string> GenerateTemplateBodyPlaceholderWithParams(string templateId, List<string> parameters)
         {
             var body = $"Placeholder for {templateId}: ";
-            return parameters.Aggregate(body, (current, param) => current + $"{param} ");
+            return parameters.Any() 
+                ? parameters.Aggregate(body, (current, param) => current + $"{param} ") 
+                : body;
         }
     }
 }
