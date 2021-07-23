@@ -18,7 +18,10 @@ namespace Service.MessageTemplates.Client
         {
             _templateReader = templateReader;
             _templateGrpcService = templateGrpcService;
+            _templateReader.SubscribeToUpdateEvents(HandleUpdate, HandleUpdate);
         }
+
+        private void HandleUpdate(IReadOnlyList<TemplateNoSqlEntity> list) => _cachedTemplates.Clear();
 
         public async Task<string> GetTemplateBody(string templateId, string brand, string lang)
         {

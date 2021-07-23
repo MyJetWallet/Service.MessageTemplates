@@ -55,7 +55,7 @@ namespace Service.MessageTemplates.Services
         {
             var templateId = request.TemplateId.ToLower();
             var brand = request.Brand.ToLower();
-            var lang = request.TemplateId.ToLower();
+            var lang = request.Lang.ToLower();
             
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(templateId);
@@ -144,6 +144,9 @@ namespace Service.MessageTemplates.Services
             if (string.IsNullOrWhiteSpace(template.DefaultLang))
                 template.DefaultLang = _defaultLang;
             
+            template.DefaultBrand = template.DefaultBrand.ToLower();
+            template.DefaultLang = template.DefaultLang.ToLower();
+            
             template.Bodies ??= new();
             template.TemplateId = template.TemplateId.ToLower();
 
@@ -160,7 +163,7 @@ namespace Service.MessageTemplates.Services
         {
             var templateId = request.TemplateId.ToLower();
             var brand = request.Brand.ToLower();
-            var lang = request.TemplateId.ToLower();
+            var lang = request.Lang.ToLower();
             
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(templateId);
@@ -175,7 +178,7 @@ namespace Service.MessageTemplates.Services
         {
             var templateId = request.TemplateId.ToLower();
             var brand = request.Brand.ToLower();
-            var lang = request.TemplateId.ToLower();
+            var lang = request.Lang.ToLower();
             
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(templateId);
