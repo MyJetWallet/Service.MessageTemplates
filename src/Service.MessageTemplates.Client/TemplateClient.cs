@@ -25,6 +25,10 @@ namespace Service.MessageTemplates.Client
 
         public async Task<string> GetTemplateBody(string templateId, string brand, string lang)
         {
+            templateId = templateId.ToLower();
+            brand = brand.ToLower();
+            lang = lang.ToLower();
+            
             if (_cachedTemplates.TryGetValue($"{templateId}:{brand}:{lang}", out var body))
                 return body;
 
