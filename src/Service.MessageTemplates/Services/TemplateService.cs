@@ -232,13 +232,15 @@ namespace Service.MessageTemplates.Services
         {
             var body = $"Placeholder for {templateId}: ";
             var parameters = await GetTemplateBodyParams(templateId);
-            return parameters.Aggregate(body, (current, param) => current + $"{param} ");
+            return (parameters!= null && parameters.Any()) 
+                ? parameters.Aggregate(body, (current, param) => current + $"{param} ") 
+                : body;
         }
         
         private async Task<string> GenerateTemplateBodyPlaceholderWithParams(string templateId, List<string> parameters)
         {
             var body = $"Placeholder for {templateId}: ";
-            return parameters.Any() 
+            return (parameters!= null && parameters.Any()) 
                 ? parameters.Aggregate(body, (current, param) => current + $"{param} ") 
                 : body;
         }
