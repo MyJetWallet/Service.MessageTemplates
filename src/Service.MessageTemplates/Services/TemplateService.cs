@@ -144,11 +144,11 @@ namespace Service.MessageTemplates.Services
             if (string.IsNullOrWhiteSpace(template.DefaultLang))
                 template.DefaultLang = _defaultLang;
             
-            template.DefaultBrand = template.DefaultBrand.ToLower();
-            template.DefaultLang = template.DefaultLang.ToLower();
+            template.DefaultBrand = template.DefaultBrand.ToLower().Trim();
+            template.DefaultLang = template.DefaultLang.ToLower().Trim();
             
             template.Bodies ??= new();
-            template.TemplateId = template.TemplateId.ToLower();
+            template.TemplateId = template.TemplateId.ToLower().Trim();
 
             if (!template.Bodies.TryGetValue((template.DefaultBrand, template.DefaultLang), out var body))
             {
@@ -161,9 +161,9 @@ namespace Service.MessageTemplates.Services
 
         public async Task EditTemplate(TemplateEditRequest request)
         {
-            var templateId = request.TemplateId.ToLower();
-            var brand = request.Brand.ToLower();
-            var lang = request.Lang.ToLower();
+            var templateId = request.TemplateId.ToLower().Trim();
+            var brand = request.Brand.ToLower().Trim();
+            var lang = request.Lang.ToLower().Trim();
             
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(templateId);
@@ -176,9 +176,9 @@ namespace Service.MessageTemplates.Services
         
         public async Task EditDefaultValues(TemplateEditRequest request)
         {
-            var templateId = request.TemplateId.ToLower();
-            var brand = request.Brand.ToLower();
-            var lang = request.Lang.ToLower();
+            var templateId = request.TemplateId.ToLower().ToLower();
+            var brand = request.Brand.ToLower().ToLower();
+            var lang = request.Lang.ToLower().ToLower();
             
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(templateId);
