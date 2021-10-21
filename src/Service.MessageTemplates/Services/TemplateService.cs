@@ -31,7 +31,11 @@ namespace Service.MessageTemplates.Services
             {
                 var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
                 var rowKey = TemplateNoSqlEntity.GenerateRowKey(request.TemplateId);
-                var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
+                var templateEntity = await _templateWriter.GetAsync(partKey, rowKey);
+                if (templateEntity == null)
+                    return;
+            
+                var template = templateEntity.ToTemplate();
                 if (template.DefaultBrand == request.Brand && template.DefaultLang == request.Lang)
                 {
                     _logger.LogWarning("Unable to delete default template for type {TemplateId}", template.TemplateId);
@@ -59,8 +63,14 @@ namespace Service.MessageTemplates.Services
             
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(templateId);
-            var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
-
+            var templateEntity = await _templateWriter.GetAsync(partKey, rowKey);
+            if (templateEntity == null)
+                return new GetTemplateBodyResponse()
+                {
+                    Body = String.Empty
+                };
+            
+            var template = templateEntity.ToTemplate();
             string body; 
             if (!template.Bodies.TryGetValue((brand, lang), out body))
             {
@@ -168,7 +178,11 @@ namespace Service.MessageTemplates.Services
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(templateId);
 
-            var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
+            var templateEntity = await _templateWriter.GetAsync(partKey, rowKey);
+            if (templateEntity == null)
+                return;
+            
+            var template = templateEntity.ToTemplate();
             template.Bodies[(brand, lang)] = request.TemplateBody;
 
             await _templateWriter.InsertOrReplaceAsync(TemplateNoSqlEntity.Create(template));
@@ -183,7 +197,11 @@ namespace Service.MessageTemplates.Services
             var partKey = TemplateNoSqlEntity.GeneratePartitionKey();
             var rowKey = TemplateNoSqlEntity.GenerateRowKey(templateId);
 
-            var template = (await _templateWriter.GetAsync(partKey, rowKey)).ToTemplate();
+            var templateEntity = await _templateWriter.GetAsync(partKey, rowKey);
+            if (templateEntity == null)
+                return;
+            
+            var template = templateEntity.ToTemplate();
             template.DefaultBrand = brand;
             template.DefaultLang = lang;
 
