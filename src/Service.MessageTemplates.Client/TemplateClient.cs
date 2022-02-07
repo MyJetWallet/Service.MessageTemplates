@@ -40,7 +40,7 @@ namespace Service.MessageTemplates.Client
                 var template = templateEntity.ToTemplate();
                 if (template.Bodies.TryGetValue((brand, lang), out body))
                 {
-                    _cachedTemplates.Add($"{templateId}:{brand}:{lang}", body);
+                    _cachedTemplates.TryAdd($"{templateId}:{brand}:{lang}", body);
                     return body;
                 }
             }
@@ -51,7 +51,7 @@ namespace Service.MessageTemplates.Client
                 Brand = brand,
                 Lang = lang
             });
-            _cachedTemplates.Add($"{templateId}:{brand}:{lang}", response.Body);
+            _cachedTemplates.TryAdd($"{templateId}:{brand}:{lang}", response.Body);
             return response.Body;
         }
     }
