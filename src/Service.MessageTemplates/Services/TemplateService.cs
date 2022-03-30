@@ -163,7 +163,7 @@ namespace Service.MessageTemplates.Services
             if (!template.Bodies.TryGetValue((template.DefaultBrand, template.DefaultLang), out var body))
             {
                 var value = await GenerateTemplateBodyPlaceholderWithParams(template.TemplateId, template.Params);
-                template.Bodies.TryAdd((template.DefaultBrand, template.DefaultLang), value);
+                template.Bodies[(template.DefaultBrand, template.DefaultLang)] = value;
             }
 
             await _templateWriter.InsertOrReplaceAsync(TemplateNoSqlEntity.Create(template));
