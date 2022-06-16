@@ -147,7 +147,7 @@ namespace Service.MessageTemplates.Services
             }
         }
 
-        public async Task CreateNewTemplate(Template template)
+        public async Task<Template> CreateNewTemplate(Template template)
         {
             if (string.IsNullOrWhiteSpace(template.DefaultBrand))
                 template.DefaultBrand = _defaultBrand;
@@ -167,6 +167,8 @@ namespace Service.MessageTemplates.Services
             }
 
             await _templateWriter.InsertOrReplaceAsync(TemplateNoSqlEntity.Create(template));
+
+            return template;
         }
 
         public async Task EditTemplate(TemplateEditRequest request)

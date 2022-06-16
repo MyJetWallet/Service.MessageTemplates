@@ -10,7 +10,7 @@ namespace Service.MessageTemplates.Grpc
     {
         [OperationContract]Task<GetTemplateBodyResponse> GetTemplateBody(GetTemplateBodyRequest request);
         [OperationContract]Task<TemplateListResponse> GetAllTemplates();
-        [OperationContract]Task CreateNewTemplate(Template template);
+        [OperationContract]Task<Template> CreateNewTemplate(Template template);
         [OperationContract]Task EditTemplate(TemplateEditRequest request);
         [OperationContract]Task DeleteBody(TemplateEditRequest request);
         [OperationContract]Task EditDefaultValues(TemplateEditRequest request);
